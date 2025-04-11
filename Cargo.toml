@@ -1,0 +1,25 @@
+[package]
+name = "ratty"
+description = "A Rust Terminal Emulator Because Reasons"
+version = "0.1.0"
+edition = "2021"
+authors = ["Evan Williams"]
+license = "MIT"
+repository = "https://github.com/evanjpw/ratty"
+readme = "README.md"
+keywords = ["terminal", "emulator", "tui", "cross-platform"]
+categories = ["command-line-utilities", "terminal-emulators"]
+
+[dependencies]
+# Core dependencies
+crossterm = "0.27"  # Terminal manipulation
+ratatui = "0.24"    # Terminal UI framework
+anyhow = "1.0"      # Error handling
+
+[workspace]
+members = [
+    ".",
+]
+
+[features]
+default = []
