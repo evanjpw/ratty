@@ -1,5 +1,8 @@
 mod frame;
 mod sash;
+mod pane;
+mod glazing;
+mod sill;
 mod renderer;
 mod config;
 mod platform;

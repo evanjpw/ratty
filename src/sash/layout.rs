@@ -1,9 +1,16 @@
 use super::{PaneId, SashError, SashResult};
 use std::collections::HashMap;
+use uuid::Uuid;
 
+#[derive(Debug, Clone, PartialEq,)]// Eq, Hash)]
+struct Layout {
+    id: Uuid,
+    inner_layout: InnerLayout
+}
+//InnerInnerInnerInner
 /// Represents the layout of panes within a Sash
-#[derive(Debug, Clone, PartialEq)]
-pub enum Layout {
+#[derive(Debug, Clone, PartialEq,)]// Eq, Hash)]
+pub enum InnerLayout {
     /// No panes (empty window)
     Empty,
     
@@ -44,54 +51,54 @@ pub enum Layout {
     },
 }
 
-impl Layout {
+impl InnerLayout {
     /// Check if the layout is empty
     pub fn is_empty(&self) -> bool {
-        matches!(self, Layout::Empty)
+        matches!(self, InnerLayout::Empty)
     }
     
     /// Get all pane IDs in the layout
     pub fn get_pane_ids(&self) -> Vec<PaneId> {
         match self {
-            Layout::Empty => vec![],
-            Layout::Single(id) => vec![*id],
-            Layout::Tabs { tabs, .. } => tabs.iter().map(|t| t.pane_id).collect(),
-            Layout::HorizontalSplit { top, bottom, .. } => {
+            InnerLayout::Empty => vec![],
+            InnerLayout::Single(id) => vec![*id],
+            InnerLayout::Tabs { tabs, .. } => tabs.iter().map(|t| t.pane_id).collect(),
+            InnerLayout::HorizontalSplit { top, bottom, .. } => {
                 let mut ids = top.get_pane_ids();
                 ids.extend(bottom.get_pane_ids());
                 ids
             }
-            Layout::VerticalSplit { left, right, .. } => {
+            InnerLayout::VerticalSplit { left, right, .. } => {
                 let mut ids = left.get_pane_ids();
                 ids.extend(right.get_pane_ids());
                 ids
             }
-            Layout::Grid { cells, .. } => {
+            InnerLayout::Grid { cells, .. } => {
                 cells.iter()
                     .flat_map(|row| row.iter())
                     .filter_map(|cell| *cell)
                     .collect()
             }
-            Layout::Custom { layout, .. } => layout.get_pane_ids(),
+            InnerLayout::Custom { layout, .. } => layout.get_pane_ids(),
         }
     }
     
-    /// Find a pane in the layout and return its path
+    /// Find a pane in the InnerLayout and return its path
     pub fn find_pane(&self, pane_id: PaneId) -> Option<Vec<LayoutPath>> {
         self.find_pane_recursive(pane_id, vec![])
     }
     
     fn find_pane_recursive(&self, pane_id: PaneId, mut path: Vec<LayoutPath>) -> Option<Vec<LayoutPath>> {
         match self {
-            Layout::Empty => None,
-            Layout::Single(id) => {
+            InnerLayout::Empty => None,
+            InnerLayout::Single(id) => {
                 if *id == pane_id {
                     Some(path)
                 } else {
                     None
                 }
             }
-            Layout::Tabs { tabs, active_tab: _ } => {
+            InnerLayout::Tabs { tabs, active_tab: _ } => {
                 for (index, tab) in tabs.iter().enumerate() {
                     if tab.pane_id == pane_id {
                         path.push(LayoutPath::Tab(index));
@@ -100,7 +107,7 @@ impl Layout {
                 }
                 None
             }
-            Layout::HorizontalSplit { top, bottom, .. } => {
+            InnerLayout::HorizontalSplit { top, bottom, .. } => {
                 path.push(LayoutPath::Top);
                 if let Some(result) = top.find_pane_recursive(pane_id, path.clone()) {
                     return Some(result);
@@ -109,7 +116,7 @@ impl Layout {
                 path.push(LayoutPath::Bottom);
                 bottom.find_pane_recursive(pane_id, path)
             }
-            Layout::VerticalSplit { left, right, .. } => {
+            InnerLayout::VerticalSplit { left, right, .. } => {
                 path.push(LayoutPath::Left);
                 if let Some(result) = left.find_pane_recursive(pane_id, path.clone()) {
                     return Some(result);
@@ -118,7 +125,7 @@ impl Layout {
                 path.push(LayoutPath::Right);
                 right.find_pane_recursive(pane_id, path)
             }
-            Layout::Grid { cells, .. } => {
+            InnerLayout::Grid { cells, .. } => {
                 for (row_idx, row) in cells.iter().enumerate() {
                     for (col_idx, cell) in row.iter().enumerate() {
                         if let Some(id) = cell {
@@ -131,7 +138,7 @@ impl Layout {
                 }
                 None
             }
-            Layout::Custom { layout, .. } => layout.find_pane_recursive(pane_id, path),
+            InnerLayout::Custom { Layout, .. } => layout.find_pane_recursive(pane_id, path),
         }
     }
 }

@@ -1,7 +1,7 @@
-use super::{PaneId, SashError, SashResult, Layout};
+use super::{Layout, PaneId, SashError, SashResult};
+use crate::sash::config::FontConfig;
 use crate::sash::layout::SplitDirection;
 use crate::sash::theme::ColorScheme;
-use crate::sash::config::FontConfig;
 use std::collections::HashMap;
 
 /// Events that can occur within a Sash
@@ -179,7 +179,7 @@ pub trait SashEventEmitter {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_event_type_from_event() {
         let pane_event = SashEvent::PaneCreated(PaneId::new(1));

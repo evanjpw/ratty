@@ -16,7 +16,9 @@ crossterm = "0.27"  # Terminal manipulation
 ratatui = "0.24"    # Terminal UI framework
 anyhow = "1.0"      # Error handling
 thiserror = "2.0.14"
-serde_json = "1.0"  # JSON serialization for events
+serde = { version = "1.0", features = ["derive"] } # Serialization
+serde_json = "1.0"
+uuid = { version = "1.18.0", features = ["v4"] }  # JSON serialization for events
 
 [dev-dependencies]
 # Testing dependencies

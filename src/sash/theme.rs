@@ -1,5 +1,7 @@
+use std::str::FromStr;
 use super::{SashError, SashResult};
 use crate::frame::config::{FontWeight, FontStyle};
+use ratatui::style::Color as RatColor;
 
 /// Complete theme configuration for a Sash
 #[derive(Debug, Clone, PartialEq)]
@@ -75,6 +77,8 @@ pub struct ColorScheme {
     pub split_border: Color,
     pub status_bar_bg: Color,
     pub status_bar_fg: Color,
+    // TODO: This was added to fix a compilation error & may actually be harmful
+    pub border: Color,
 }
 
 impl Default for ColorScheme {
@@ -115,12 +119,13 @@ impl Default for ColorScheme {
             split_border: Color::from_rgb(80, 80, 80),
             status_bar_bg: Color::from_rgb(40, 40, 40),
             status_bar_fg: Color::from_rgb(180, 180, 180),
+            border: Color::from_rgb(80, 80, 80),
         }
     }
 }
 
 /// RGBA color representation
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct Color {
     pub r: u8,
     pub g: u8,
@@ -175,6 +180,12 @@ impl Color {
         } else {
             format!("#{:02X}{:02X}{:02X}{:02X}", self.r, self.g, self.b, self.a)
         }
+    }
+}
+
+impl From<Color> for  RatColor {
+    fn from(value: Color) -> Self {
+        RatColor::from_str(value.to_hex().as_str()).unwrap()
     }
 }
 

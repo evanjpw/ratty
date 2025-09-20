@@ -1,8 +1,8 @@
-use crate::frame::SashId;
 use super::{
-    PaneId, SashError, SashResult, Layout, Theme, WindowConfig, PaneConfig,
-    SashEvent, SashEventType, SashEventListener, SplitDirection
+    Layout, PaneConfig, PaneId, SashEvent, SashEventListener, SashEventType,
+    SashResult, SplitDirection, Theme, WindowConfig
 };
+use crate::frame::SashId;
 
 /// Statistics about a Sash
 #[derive(Debug, Clone)]

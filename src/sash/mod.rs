@@ -9,16 +9,18 @@ pub mod config;
 #[cfg(test)]
 mod tests;
 
+pub use config::*;
 pub use errors::*;
-pub use layout::*;
-pub use theme::*;
-pub use tabs::*;
 pub use events::*;
 pub use interface::*;
-pub use config::*;
+pub use layout::*;
+pub use tabs::*;
+pub use theme::*;
 
-use std::collections::HashMap;
+use crate::frame;
 use crate::frame::SashId;
+use crate::pane::PaneInterface;
+use std::collections::HashMap;
 
 /// Unique identifier for a Pane (terminal instance)
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -34,18 +36,18 @@ impl PaneId {
     }
 }
 
-/// Placeholder trait for Pane interface - will be defined in pane layer
-#[cfg_attr(test, mockall::automock)]
-pub trait PaneInterface: Send + Sync {
-    fn id(&self) -> PaneId;
-    fn is_active(&self) -> bool;
-    fn set_active(&mut self, active: bool);
-    fn get_title(&self) -> &str;
-    fn set_title(&mut self, title: String);
-    fn is_modified(&self) -> bool;
-    fn set_modified(&mut self, modified: bool);
-    // More methods will be added as we develop the Pane layer
-}
+// /// Placeholder trait for Pane interface - will be defined in pane layer
+// #[cfg_attr(test, mockall::automock)]
+// pub trait PaneInterface: Send + Sync {
+//     fn id(&self) -> PaneId;
+//     fn is_active(&self) -> bool;
+//     fn set_active(&mut self, active: bool);
+//     fn get_title(&self) -> &str;
+//     fn set_title(&mut self, title: String);
+//     fn is_modified(&self) -> bool;
+//     fn set_modified(&mut self, modified: bool);
+//     // More methods will be added as we develop the Pane layer
+// }
 
 /// The main Sash structure - represents a window containing multiple panes
 pub struct Sash {
@@ -116,7 +118,7 @@ impl Sash {
 }
 
 // Basic implementation of SashInterface for Frame compatibility
-impl crate::frame::SashInterface for Sash {
+impl frame::SashInterface for Sash {
     fn id(&self) -> SashId {
         self.id
     }
